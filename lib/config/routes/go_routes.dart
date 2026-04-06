@@ -3,6 +3,7 @@ import 'package:flutpos/features/auth/presentation/login.dart';
 import 'package:flutpos/features/auth/presentation/register.dart';
 import 'package:flutpos/features/auth/presentation/reset_password.dart';
 import 'package:flutpos/features/dashboard/presentation/home.dart';
+import 'package:flutpos/features/products/presentation/pages/product_page.dart';
 import 'package:flutpos/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -84,6 +85,10 @@ GoRouter buildAppRouter() {
       GoRoute(
         path: ConstantRoutes.dashboardScreen,
         builder: (_, _) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: ConstantRoutes.productsScreen,
+        builder: (_, _) => const ProductPage(),
       ),
       GoRoute(
         path: ConstantRoutes.splashScreen,

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static ThemeData light = ThemeData(
     useMaterial3: true,
-    colorScheme: const ColorScheme(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
       brightness: Brightness.light,
       primary: AppColors.primary,
       onPrimary: AppColors.onPrimary,
