@@ -1,6 +1,4 @@
-import 'package:flutpos/core/theme/app_colors.dart';
 import 'package:flutpos/constant/routes.dart';
-import 'package:flutpos/core/theme/app_theme.dart';
 import 'package:flutpos/features/auth/application/app_auth_controller.dart';
 import 'package:flutpos/features/products/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
@@ -32,123 +30,201 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = Theme.of(context).colorScheme.primary;
+    final captionStyle = TextStyle(
+      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.72),
+      fontSize: 13,
+    );
+
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 16),
-                const Text(
-                  'Create Account',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.fromLTRB(30, 20, 30, 20 + keyboardInset),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 40,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Daftar akun baru sesuai role di PRD',
-                  style: TextStyle(color: Colors.grey.shade700),
-                ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: _inputDecoration('Nama Lengkap'),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Nama wajib diisi';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration('Email'),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email wajib diisi';
-                    }
-                    if (value.isValidEmail() != true) {
-                      return 'Email tidak valid';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: _inputDecoration('Password'),
-                  validator: (String? value) {
-                    if (value == null || value.length < 6) {
-                      return 'Minimal 6 karakter';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<UserRole>(
-                  initialValue: _selectedRole,
-                  decoration: _inputDecoration('Role'),
-                  items: UserRole.values
-                      .map(
-                        (UserRole role) => DropdownMenuItem<UserRole>(
-                          value: role,
-                          child: Text(role.label),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          shape: BoxShape.circle,
                         ),
-                      )
-                      .toList(growable: false),
-                  onChanged: (UserRole? value) {
-                    if (value != null) {
-                      setState(() => _selectedRole = value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _isSubmitting ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                  ),
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
+                        child: Icon(
+                          Icons.coffee_rounded,
+                          color: accentColor,
+                          size: 40,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'BrewPOS',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.all(30),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E1C1B),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Create Account',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            _buildLabel('NAMA LENGKAP'),
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: _inputDecoration('Nama Lengkap'),
+                              validator: (String? value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Nama wajib diisi';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            _buildLabel('EMAIL ADDRESS'),
+                            TextFormField(
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: _inputDecoration('Email'),
+                              validator: (String? value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Email wajib diisi';
+                                }
+                                if (value.isValidEmail() != true) {
+                                  return 'Email tidak valid';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            _buildLabel('PASSWORD'),
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: _inputDecoration('Password'),
+                              validator: (String? value) {
+                                if (value == null || value.length < 6) {
+                                  return 'Minimal 6 karakter';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            _buildLabel('ROLE'),
+                            DropdownButtonFormField<UserRole>(
+                              initialValue: _selectedRole,
+                              decoration: _inputDecoration('Role'),
+                              dropdownColor: const Color(0xFF1E1C1B),
+                              style: const TextStyle(color: Colors.white),
+                              iconEnabledColor: Colors.white70,
+                              items: UserRole.values
+                                  .map(
+                                    (UserRole role) =>
+                                        DropdownMenuItem<UserRole>(
+                                          value: role,
+                                          child: Text(role.label),
+                                        ),
+                                  )
+                                  .toList(growable: false),
+                              onChanged: (UserRole? value) {
+                                if (value != null) {
+                                  setState(() => _selectedRole = value);
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 55,
+                              child: ElevatedButton(
+                                onPressed: _isSubmitting ? null : _submit,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: accentColor,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: _isSubmitting
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'BUAT AKUN',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.5,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Sudah punya akun?', style: captionStyle),
+                          TextButton(
+                            onPressed: _isSubmitting
+                                ? null
+                                : () => context.go(ConstantRoutes.signinScreen),
+                            child: const Text('Masuk'),
                           ),
-                        )
-                      : const Text('Buat Akun'),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Sudah punya akun?'),
-                    TextButton(
-                      onPressed: _isSubmitting
-                          ? null
-                          : () => context.go(ConstantRoutes.signinScreen),
-                      child: const Text('Masuk'),
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: _isSubmitting
-                        ? null
-                        : () => context.go(ConstantRoutes.resetPasswordScreen),
-                    child: const Text('Lupa Password?'),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: _isSubmitting
+                            ? null
+                            : () => context.go(
+                                ConstantRoutes.resetPasswordScreen,
+                              ),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.74),
+                        ),
+                        child: const Text('Lupa Password?'),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -199,10 +275,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+      hintText: label,
+      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.2)),
+      enabledBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.white12),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+      ),
+      errorStyle: const TextStyle(fontSize: 10, color: Colors.redAccent),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.1,
+      ),
     );
   }
 }

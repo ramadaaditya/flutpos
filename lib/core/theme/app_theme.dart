@@ -18,4 +18,21 @@ class AppTheme {
       surfaceBright: AppColors.background,
     ),
   );
+
+  static ThemeData dark = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColorsDark.primary,
+      brightness: Brightness.dark,
+      primary: AppColorsDark.primary,
+      onPrimary: AppColorsDark.onPrimary,
+      secondary: AppColorsDark.secondary,
+      onSecondary: AppColorsDark.onSecondary,
+      error: Colors.red,
+      onError: Colors.white,
+      surface: const Color(0xFF12100F),
+      onSurface: Colors.white,
+      surfaceBright: const Color(0xFF1E1B1A),
+    ),
+  );
 }
