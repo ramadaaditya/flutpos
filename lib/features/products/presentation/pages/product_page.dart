@@ -385,7 +385,7 @@ class _ProductCard extends StatelessWidget {
                       : Image.network(
                           product.imageUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(
+                          errorBuilder: (_, _, _) => const Icon(
                             Icons.inventory_2_outlined,
                             color: AppColors.primary,
                           ),
@@ -810,7 +810,7 @@ class _ProductFormSheetState extends State<_ProductFormSheet> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<ProductUnit>(
-                    value: _unit,
+                    initialValue: _unit,
                     decoration: _inputDecoration('Satuan'),
                     items: ProductUnit.values
                         .map(

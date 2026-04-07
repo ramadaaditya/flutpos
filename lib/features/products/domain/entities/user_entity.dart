@@ -25,3 +25,16 @@ class User extends Equatable {
 }
 
 enum UserRole { owner, admin, cashier }
+
+extension UserRoleLabel on UserRole {
+  String get label {
+    switch (this) {
+      case UserRole.owner:
+        return 'Owner';
+      case UserRole.admin:
+        return 'Admin';
+      case UserRole.cashier:
+        return 'Cashier';
+    }
+  }
+}

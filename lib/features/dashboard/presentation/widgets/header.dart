@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 class DashboardHeader extends StatelessWidget {
   final String username;
   final String role;
+  final VoidCallback? onLogoutTap;
+  final VoidCallback? onSettingsTap;
 
   const DashboardHeader({
     super.key,
     required this.username,
     required this.role,
+    this.onLogoutTap,
+    this.onSettingsTap,
   });
 
   @override
@@ -19,28 +23,52 @@ class DashboardHeader extends StatelessWidget {
         children: [
           const Icon(Icons.menu, size: 28),
           const SizedBox(width: 16),
-          Text(
-            username,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    role,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: Text(
-              role,
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
           ),
-          const Spacer(),
-          const Icon(Icons.settings_outlined, size: 28),
+          IconButton(
+            onPressed: onSettingsTap,
+            icon: const Icon(Icons.settings_outlined),
+          ),
+          IconButton(
+            onPressed: onLogoutTap,
+            icon: const Icon(Icons.logout_rounded),
+          ),
         ],
       ),
     );

@@ -997,6 +997,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.5"
+  utils_validators:
+    dependency: "direct main"
+    description:
+      name: utils_validators
+      sha256: "632148fe4a8842df130733f5e6ec995bfc132d938c45b8023084a28d248f087f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   vector_math:
     dependency: transitive
     description:

@@ -1,4 +1,5 @@
 import 'package:flutpos/constant/routes.dart';
+import 'package:flutpos/features/auth/application/app_auth_controller.dart';
 import 'package:flutpos/core/theme/app_colors.dart';
 import 'package:flutpos/features/dashboard/presentation/widgets/header.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String username = appAuthController.displayName ?? 'BrewPOS User';
+    final String role = appAuthController.roleLabel;
+    final bool canManageProducts = appAuthController.canManageProducts;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
       body: SafeArea(
@@ -17,7 +22,13 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const DashboardHeader(username: 'Dhira Danuarta', role: 'Waiter'),
+              DashboardHeader(
+                username: username,
+                role: role,
+                onLogoutTap: () async {
+                  await appAuthController.signOut();
+                },
+              ),
               const SizedBox(height: 24),
               Container(
                 width: double.infinity,
@@ -46,23 +57,44 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Masuk ke local product CRUD untuk mengelola data dummy tanpa backend.',
+                      canManageProducts
+                          ? 'Masuk ke local product CRUD untuk mengelola data dummy tanpa backend.'
+                          : 'Akun kasir aktif. Fokus ke transaksi, bukan pengelolaan produk.',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.92),
                         height: 1.4,
                       ),
                     ),
                     const SizedBox(height: 18),
-                    FilledButton.icon(
-                      onPressed: () =>
-                          context.push(ConstantRoutes.productsScreen),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.primary,
+                    if (canManageProducts)
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: () =>
+                              context.push(ConstantRoutes.productsScreen),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppColors.primary,
+                          ),
+                          icon: const Icon(Icons.inventory_2_outlined),
+                          label: const Text('Buka Produk Lokal'),
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: null,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.3,
+                            ),
+                            foregroundColor: Colors.white,
+                          ),
+                          icon: const Icon(Icons.lock_outline),
+                          label: const Text('Produk Terkunci'),
+                        ),
                       ),
-                      icon: const Icon(Icons.inventory_2_outlined),
-                      label: const Text('Buka Local Product CRUD'),
-                    ),
                   ],
                 ),
               ),
@@ -72,11 +104,28 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
+              if (canManageProducts)
+                _ActionTile(
+                  icon: Icons.inventory_2_outlined,
+                  title: 'Kelola produk lokal',
+                  subtitle: 'Tambah, edit, dan hapus produk dummy.',
+                  onTap: () => context.push(ConstantRoutes.productsScreen),
+                )
+              else
+                _ActionTile(
+                  icon: Icons.receipt_long_outlined,
+                  title: 'Transaksi kasir',
+                  subtitle: 'Sprint berikutnya: cart, checkout, dan struk.',
+                  onTap: () {},
+                ),
+              const SizedBox(height: 12),
               _ActionTile(
-                icon: Icons.inventory_2_outlined,
-                title: 'Kelola produk lokal',
-                subtitle: 'Tambah, edit, dan hapus produk dummy.',
-                onTap: () => context.push(ConstantRoutes.productsScreen),
+                icon: Icons.logout_rounded,
+                title: 'Logout',
+                subtitle: 'Keluar dari sesi aktif Supabase.',
+                onTap: () async {
+                  await appAuthController.signOut();
+                },
               ),
             ],
           ),
@@ -135,6 +184,8 @@ class _ActionTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                   ],
